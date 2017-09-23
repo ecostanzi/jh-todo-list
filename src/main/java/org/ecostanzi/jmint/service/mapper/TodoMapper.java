@@ -11,12 +11,10 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {UserMapper.class, })
 public interface TodoMapper extends EntityMapper <TodoDTO, Todo> {
 
-    @Mapping(source = "author.id", target = "authorId")
-    @Mapping(source = "author.login", target = "authorLogin")
-    TodoDTO toDto(Todo todo); 
+    TodoDTO toDto(Todo todo);
 
-    @Mapping(source = "authorId", target = "author")
-    Todo toEntity(TodoDTO todoDTO); 
+    @Mapping(ignore = true, target = "author")
+    Todo toEntity(TodoDTO todoDTO);
     default Todo fromId(Long id) {
         if (id == null) {
             return null;

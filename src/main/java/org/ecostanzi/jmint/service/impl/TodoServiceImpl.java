@@ -1,5 +1,9 @@
 package org.ecostanzi.jmint.service.impl;
 
+import org.ecostanzi.jmint.domain.User;
+import org.ecostanzi.jmint.repository.UserRepository;
+import org.ecostanzi.jmint.security.AuthoritiesConstants;
+import org.ecostanzi.jmint.security.SecurityUtils;
 import org.ecostanzi.jmint.service.TodoService;
 import org.ecostanzi.jmint.domain.Todo;
 import org.ecostanzi.jmint.repository.TodoRepository;
@@ -13,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -31,10 +37,13 @@ public class TodoServiceImpl implements TodoService{
 
     private final TodoSearchRepository todoSearchRepository;
 
-    public TodoServiceImpl(TodoRepository todoRepository, TodoMapper todoMapper, TodoSearchRepository todoSearchRepository) {
+    private final UserRepository userRepository;
+
+    public TodoServiceImpl(TodoRepository todoRepository, TodoMapper todoMapper, TodoSearchRepository todoSearchRepository, UserRepository userRepository) {
         this.todoRepository = todoRepository;
         this.todoMapper = todoMapper;
         this.todoSearchRepository = todoSearchRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -46,7 +55,10 @@ public class TodoServiceImpl implements TodoService{
     @Override
     public TodoDTO save(TodoDTO todoDTO) {
         log.debug("Request to save Todo : {}", todoDTO);
-        Todo todo = todoMapper.toEntity(todoDTO);
+        Todo todo = new Todo();
+        todo.setText(todoDTO.getText());
+        Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        todo.setAuthor(user.get());
         todo = todoRepository.save(todo);
         TodoDTO result = todoMapper.toDto(todo);
         todoSearchRepository.save(todo);
@@ -63,8 +75,14 @@ public class TodoServiceImpl implements TodoService{
     @Transactional(readOnly = true)
     public Page<TodoDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Todos");
-        return todoRepository.findAll(pageable)
-            .map(todoMapper::toDto);
+        Page<Todo> todoList;
+        if(SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)){
+            todoList = todoRepository.findAll(pageable);
+        } else {
+            todoList = todoRepository.findByAuthorIsCurrentUser(pageable);
+        }
+
+        return todoList.map(todoMapper::toDto);
     }
 
     /**

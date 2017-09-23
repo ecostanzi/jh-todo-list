@@ -18,9 +18,7 @@ public class TodoDTO implements Serializable {
     @Size(min = 1, max = 40)
     private String text;
 
-    private Long authorId;
-
-    private String authorLogin;
+    private UserDTO author;
 
     public Long getId() {
         return id;
@@ -38,20 +36,12 @@ public class TodoDTO implements Serializable {
         this.text = text;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public UserDTO getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(Long userId) {
-        this.authorId = userId;
-    }
-
-    public String getAuthorLogin() {
-        return authorLogin;
-    }
-
-    public void setAuthorLogin(String userLogin) {
-        this.authorLogin = userLogin;
+    public void setAuthor(UserDTO author) {
+        this.author = author;
     }
 
     @Override
