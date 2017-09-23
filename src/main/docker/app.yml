@@ -1,0 +1,19 @@
+version: '2'
+services:
+    jmint-app:
+        image: jmint
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod,swagger
+            - SPRING_DATASOURCE_URL=jdbc:mysql://jmint-mysql:3306/jmint?useUnicode=true&characterEncoding=utf8&useSSL=false
+            - JHIPSTER_SLEEP=10 # gives time for the database to boot before the application
+            - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=jmint-elasticsearch:9300
+        ports:
+            - 8080:8080
+    jmint-mysql:
+        extends:
+            file: mysql.yml
+            service: jmint-mysql
+    jmint-elasticsearch:
+        extends:
+            file: elasticsearch.yml
+            service: jmint-elasticsearch
