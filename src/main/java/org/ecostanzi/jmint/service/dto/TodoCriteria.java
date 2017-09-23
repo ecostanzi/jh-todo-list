@@ -36,6 +36,8 @@ public class TodoCriteria implements Serializable {
 
     private LongFilter authorId;
 
+    private LongFilter listId;
+
     public TodoCriteria() {
     }
 
@@ -79,6 +81,14 @@ public class TodoCriteria implements Serializable {
         this.authorId = authorId;
     }
 
+    public LongFilter getListId() {
+        return listId;
+    }
+
+    public void setListId(LongFilter listId) {
+        this.listId = listId;
+    }
+
     @Override
     public String toString() {
         return "TodoCriteria{" +
@@ -87,6 +97,8 @@ public class TodoCriteria implements Serializable {
                 (done != null ? "done=" + done + ", " : "") +
                 (createdDate != null ? "createdDate=" + createdDate + ", " : "") +
                 (authorId != null ? "authorId=" + authorId + ", " : "") +
+                (listId != null ? "listId=" + listId + ", " : "") +
+                (listId != null ? "listId=" + listId + ", " : "") +
             "}";
     }
 

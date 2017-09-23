@@ -7,7 +7,12 @@
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20170923102134_added_entity_Todo.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20170923124354_todo_newcols.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20170923131333_added_entity_TodoList.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20170923133159_added_list_id_to_todo.xml" relativeToChangelogFile="false"/>
+
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20170923102134_added_entity_constraints_Todo.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20170923131333_added_entity_constraints_TodoList.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20170923102134_added_new_entity_constraints_Todo.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

@@ -40,6 +40,9 @@ public class Todo implements Serializable {
     @NotNull
     private User author;
 
+    @ManyToOne
+    private TodoList list;
+
     // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -100,6 +103,15 @@ public class Todo implements Serializable {
     public void setAuthor(User user) {
         this.author = user;
     }
+
+    public void setList(TodoList todoList) {
+        this.list = todoList;
+    }
+
+    public TodoList getList() {
+        return list;
+    }
+
     // jhipster-needle-entity-add-getters-setters - Jhipster will add getters and setters here, do not remove
 
     @Override

@@ -10,18 +10,12 @@
             ],
             "otherEntityField": "login",
             "ownerSide": true,
-            "otherEntityRelationshipName": "todo"
-        },
-        {
-            "relationshipName": "list",
-            "otherEntityName": "todoList",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "id"
+            "otherEntityRelationshipName": "todoList"
         }
     ],
     "fields": [
         {
-            "fieldName": "text",
+            "fieldName": "name",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required",
@@ -29,21 +23,13 @@
                 "maxlength"
             ],
             "fieldValidateRulesMinlength": "1",
-            "fieldValidateRulesMaxlength": "40"
-        },
-        {
-            "fieldName": "done",
-            "fieldType": "Boolean"
-        },
-        {
-            "fieldName": "createdDate",
-            "fieldType": "ZonedDateTime"
+            "fieldValidateRulesMaxlength": "20"
         }
     ],
-    "changelogDate": "20170923102134",
+    "changelogDate": "20170923131333",
     "dto": "mapstruct",
     "service": "serviceImpl",
-    "entityTableName": "todo",
-    "jpaMetamodelFiltering": true,
+    "entityTableName": "todo_list",
+    "jpaMetamodelFiltering": false,
     "pagination": "pagination"
 }

@@ -3,7 +3,12 @@ package org.ecostanzi.jmint.service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import io.github.jhipster.service.filter.LongFilter;
+import org.ecostanzi.jmint.repository.UserRepository;
+import org.ecostanzi.jmint.security.AuthoritiesConstants;
+import org.ecostanzi.jmint.security.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -42,10 +47,14 @@ public class TodoQueryService extends QueryService<Todo> {
 
     private final TodoSearchRepository todoSearchRepository;
 
-    public TodoQueryService(TodoRepository todoRepository, TodoMapper todoMapper, TodoSearchRepository todoSearchRepository) {
+    private UserRepository userRepository;
+
+    public TodoQueryService(TodoRepository todoRepository, TodoMapper todoMapper,
+                            TodoSearchRepository todoSearchRepository, UserRepository userRepository) {
         this.todoRepository = todoRepository;
         this.todoMapper = todoMapper;
         this.todoSearchRepository = todoSearchRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -69,6 +78,14 @@ public class TodoQueryService extends QueryService<Todo> {
     @Transactional(readOnly = true)
     public Page<TodoDTO> findByCriteria(TodoCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
+        if(!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)){
+            Optional<User> userLogin
+                = this.userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+            LongFilter authorFilter = new LongFilter();
+            authorFilter.setEquals(userLogin.get().getId());
+            criteria.setAuthorId(authorFilter);
+        }
+
         final Specifications<Todo> specification = createSpecification(criteria);
         final Page<Todo> result = todoRepository.findAll(specification, page);
         return result.map(todoMapper::toDto);
@@ -94,6 +111,9 @@ public class TodoQueryService extends QueryService<Todo> {
             }
             if (criteria.getAuthorId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getAuthorId(), Todo_.author, User_.id));
+            }
+            if (criteria.getListId() != null) {
+                specification = specification.and(buildReferringEntitySpecification(criteria.getListId(), Todo_.list, TodoList_.id));
             }
         }
         return specification;

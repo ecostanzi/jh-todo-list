@@ -4,13 +4,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <!--
-        Added the constraints for entity Todo.
+        Added the constraints for entity TodoList.
     -->
-    <changeSet id="20170923102134-2" author="jhipster">
-
+    <changeSet id="20170923131333-2" author="jhipster">
+        
         <addForeignKeyConstraint baseColumnNames="author_id"
-                                 baseTableName="todo"
-                                 constraintName="fk_todo_author_id"
+                                 baseTableName="todo_list"
+                                 constraintName="fk_todo_list_author_id"
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 
