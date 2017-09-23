@@ -43,6 +43,7 @@ public class CacheConfiguration {
             cm.createCache(org.ecostanzi.jmint.domain.User.class.getName() + ".authorities", jcacheConfiguration);
             cm.createCache(org.ecostanzi.jmint.domain.Todo.class.getName(), jcacheConfiguration);
             cm.createCache(org.ecostanzi.jmint.domain.TodoList.class.getName(), jcacheConfiguration);
+            cm.createCache(org.ecostanzi.jmint.domain.UserList.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

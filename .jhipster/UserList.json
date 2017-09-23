@@ -1,0 +1,37 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "userList"
+        },
+        {
+            "relationshipName": "todoList",
+            "otherEntityName": "todoList",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "main",
+            "fieldType": "Boolean"
+        }
+    ],
+    "changelogDate": "20170923134349",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "user_list",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}
