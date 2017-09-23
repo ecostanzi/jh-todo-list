@@ -31,6 +31,8 @@
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="text"><span>Text</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="done"><span>Done</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="createdDate"><span>Created Date</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="authorLogin"><span>Author</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
@@ -39,6 +41,8 @@
             <tr *ngFor="let todo of todos ;trackBy: trackId">
                 <td><a [routerLink]="['../todo', todo.id ]">{{todo.id}}</a></td>
                 <td>{{todo.text}}</td>
+                <td>{{todo.done}}</td>
+                <td>{{todo.createdDate | date:'medium'}}</td>
                 <td>
                     {{todo.author.login}}
                 </td>

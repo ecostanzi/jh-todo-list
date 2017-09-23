@@ -24,6 +24,14 @@
             ],
             "fieldValidateRulesMinlength": "1",
             "fieldValidateRulesMaxlength": "40"
+        },
+        {
+            "fieldName": "done",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "createdDate",
+            "fieldType": "ZonedDateTime"
         }
     ],
     "changelogDate": "20170923102134",

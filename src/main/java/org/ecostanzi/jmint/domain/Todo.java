@@ -7,6 +7,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -28,6 +29,12 @@ public class Todo implements Serializable {
     @Size(min = 1, max = 40)
     @Column(name = "text", length = 40, nullable = false)
     private String text;
+
+    @Column(name = "done")
+    private Boolean done;
+
+    @Column(name = "created_date")
+    private ZonedDateTime createdDate;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -53,6 +60,32 @@ public class Todo implements Serializable {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Boolean isDone() {
+        return done;
+    }
+
+    public Todo done(Boolean done) {
+        this.done = done;
+        return this;
+    }
+
+    public void setDone(Boolean done) {
+        this.done = done;
+    }
+
+    public ZonedDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public Todo createdDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
+        return this;
+    }
+
+    public void setCreatedDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     public User getAuthor() {
@@ -94,6 +127,8 @@ public class Todo implements Serializable {
         return "Todo{" +
             "id=" + getId() +
             ", text='" + getText() + "'" +
+            ", done='" + isDone() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
             "}";
     }
 }

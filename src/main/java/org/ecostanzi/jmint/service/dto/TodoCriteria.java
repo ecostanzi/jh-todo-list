@@ -11,7 +11,7 @@ import io.github.jhipster.service.filter.StringFilter;
 
 
 
-
+import io.github.jhipster.service.filter.ZonedDateTimeFilter;
 
 
 /**
@@ -29,6 +29,10 @@ public class TodoCriteria implements Serializable {
     private LongFilter id;
 
     private StringFilter text;
+
+    private BooleanFilter done;
+
+    private ZonedDateTimeFilter createdDate;
 
     private LongFilter authorId;
 
@@ -51,6 +55,22 @@ public class TodoCriteria implements Serializable {
         this.text = text;
     }
 
+    public BooleanFilter getDone() {
+        return done;
+    }
+
+    public void setDone(BooleanFilter done) {
+        this.done = done;
+    }
+
+    public ZonedDateTimeFilter getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(ZonedDateTimeFilter createdDate) {
+        this.createdDate = createdDate;
+    }
+
     public LongFilter getAuthorId() {
         return authorId;
     }
@@ -64,6 +84,8 @@ public class TodoCriteria implements Serializable {
         return "TodoCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
                 (text != null ? "text=" + text + ", " : "") +
+                (done != null ? "done=" + done + ", " : "") +
+                (createdDate != null ? "createdDate=" + createdDate + ", " : "") +
                 (authorId != null ? "authorId=" + authorId + ", " : "") +
             "}";
     }

@@ -1,6 +1,7 @@
 package org.ecostanzi.jmint.service.dto;
 
 
+import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -18,7 +19,13 @@ public class TodoDTO implements Serializable {
     @Size(min = 1, max = 40)
     private String text;
 
-    private UserDTO author;
+    private Boolean done;
+
+    private ZonedDateTime createdDate;
+
+    private Long authorId;
+
+    private String authorLogin;
 
     public Long getId() {
         return id;
@@ -36,12 +43,36 @@ public class TodoDTO implements Serializable {
         this.text = text;
     }
 
-    public UserDTO getAuthor() {
-        return author;
+    public Boolean isDone() {
+        return done;
     }
 
-    public void setAuthor(UserDTO author) {
-        this.author = author;
+    public void setDone(Boolean done) {
+        this.done = done;
+    }
+
+    public ZonedDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Long userId) {
+        this.authorId = userId;
+    }
+
+    public String getAuthorLogin() {
+        return authorLogin;
+    }
+
+    public void setAuthorLogin(String userLogin) {
+        this.authorLogin = userLogin;
     }
 
     @Override
@@ -70,6 +101,8 @@ public class TodoDTO implements Serializable {
         return "TodoDTO{" +
             "id=" + getId() +
             ", text='" + getText() + "'" +
+            ", done='" + isDone() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
             "}";
     }
 }

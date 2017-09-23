@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { DatePipe } from '@angular/common';
 import { Todo } from './todo.model';
 import { TodoService } from './todo.service';
 
@@ -9,6 +10,7 @@ export class TodoPopupService {
     private ngbModalRef: NgbModalRef;
 
     constructor(
+        private datePipe: DatePipe,
         private modalService: NgbModal,
         private router: Router,
         private todoService: TodoService
@@ -26,6 +28,8 @@ export class TodoPopupService {
 
             if (id) {
                 this.todoService.find(id).subscribe((todo) => {
+                    todo.createdDate = this.datePipe
+                        .transform(todo.createdDate, 'yyyy-MM-ddTHH:mm:ss');
                     this.ngbModalRef = this.todoModalRef(component, todo);
                     resolve(this.ngbModalRef);
                 });

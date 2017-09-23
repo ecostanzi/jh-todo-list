@@ -28,8 +28,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.List;
 
+import static org.ecostanzi.jmint.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -46,6 +51,12 @@ public class TodoResourceIntTest {
 
     private static final String DEFAULT_TEXT = "AAAAAAAAAA";
     private static final String UPDATED_TEXT = "BBBBBBBBBB";
+
+    private static final Boolean DEFAULT_DONE = false;
+    private static final Boolean UPDATED_DONE = true;
+
+    private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_CREATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     @Autowired
     private TodoRepository todoRepository;
@@ -96,7 +107,9 @@ public class TodoResourceIntTest {
      */
     public static Todo createEntity(EntityManager em) {
         Todo todo = new Todo()
-            .text(DEFAULT_TEXT);
+            .text(DEFAULT_TEXT)
+            .done(DEFAULT_DONE)
+            .createdDate(DEFAULT_CREATED_DATE);
         // Add required entity
         User author = UserResourceIntTest.createEntity(em);
         em.persist(author);
@@ -128,6 +141,8 @@ public class TodoResourceIntTest {
         assertThat(todoList).hasSize(databaseSizeBeforeCreate + 1);
         Todo testTodo = todoList.get(todoList.size() - 1);
         assertThat(testTodo.getText()).isEqualTo(DEFAULT_TEXT);
+        assertThat(testTodo.isDone()).isEqualTo(DEFAULT_DONE);
+        assertThat(testTodo.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
 
         // Validate the Todo in Elasticsearch
         Todo todoEs = todoSearchRepository.findOne(testTodo.getId());
@@ -184,7 +199,9 @@ public class TodoResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(todo.getId().intValue())))
-            .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT.toString())));
+            .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT.toString())))
+            .andExpect(jsonPath("$.[*].done").value(hasItem(DEFAULT_DONE.booleanValue())))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))));
     }
 
     @Test
@@ -198,7 +215,9 @@ public class TodoResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(todo.getId().intValue()))
-            .andExpect(jsonPath("$.text").value(DEFAULT_TEXT.toString()));
+            .andExpect(jsonPath("$.text").value(DEFAULT_TEXT.toString()))
+            .andExpect(jsonPath("$.done").value(DEFAULT_DONE.booleanValue()))
+            .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)));
     }
 
     @Test
@@ -240,6 +259,111 @@ public class TodoResourceIntTest {
         defaultTodoShouldNotBeFound("text.specified=false");
     }
 
+    @Test
+    @Transactional
+    public void getAllTodosByDoneIsEqualToSomething() throws Exception {
+        // Initialize the database
+        todoRepository.saveAndFlush(todo);
+
+        // Get all the todoList where done equals to DEFAULT_DONE
+        defaultTodoShouldBeFound("done.equals=" + DEFAULT_DONE);
+
+        // Get all the todoList where done equals to UPDATED_DONE
+        defaultTodoShouldNotBeFound("done.equals=" + UPDATED_DONE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTodosByDoneIsInShouldWork() throws Exception {
+        // Initialize the database
+        todoRepository.saveAndFlush(todo);
+
+        // Get all the todoList where done in DEFAULT_DONE or UPDATED_DONE
+        defaultTodoShouldBeFound("done.in=" + DEFAULT_DONE + "," + UPDATED_DONE);
+
+        // Get all the todoList where done equals to UPDATED_DONE
+        defaultTodoShouldNotBeFound("done.in=" + UPDATED_DONE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTodosByDoneIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        todoRepository.saveAndFlush(todo);
+
+        // Get all the todoList where done is not null
+        defaultTodoShouldBeFound("done.specified=true");
+
+        // Get all the todoList where done is null
+        defaultTodoShouldNotBeFound("done.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTodosByCreatedDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        todoRepository.saveAndFlush(todo);
+
+        // Get all the todoList where createdDate equals to DEFAULT_CREATED_DATE
+        defaultTodoShouldBeFound("createdDate.equals=" + DEFAULT_CREATED_DATE);
+
+        // Get all the todoList where createdDate equals to UPDATED_CREATED_DATE
+        defaultTodoShouldNotBeFound("createdDate.equals=" + UPDATED_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTodosByCreatedDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        todoRepository.saveAndFlush(todo);
+
+        // Get all the todoList where createdDate in DEFAULT_CREATED_DATE or UPDATED_CREATED_DATE
+        defaultTodoShouldBeFound("createdDate.in=" + DEFAULT_CREATED_DATE + "," + UPDATED_CREATED_DATE);
+
+        // Get all the todoList where createdDate equals to UPDATED_CREATED_DATE
+        defaultTodoShouldNotBeFound("createdDate.in=" + UPDATED_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTodosByCreatedDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        todoRepository.saveAndFlush(todo);
+
+        // Get all the todoList where createdDate is not null
+        defaultTodoShouldBeFound("createdDate.specified=true");
+
+        // Get all the todoList where createdDate is null
+        defaultTodoShouldNotBeFound("createdDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTodosByCreatedDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        todoRepository.saveAndFlush(todo);
+
+        // Get all the todoList where createdDate greater than or equals to DEFAULT_CREATED_DATE
+        defaultTodoShouldBeFound("createdDate.greaterOrEqualThan=" + DEFAULT_CREATED_DATE);
+
+        // Get all the todoList where createdDate greater than or equals to UPDATED_CREATED_DATE
+        defaultTodoShouldNotBeFound("createdDate.greaterOrEqualThan=" + UPDATED_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTodosByCreatedDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        todoRepository.saveAndFlush(todo);
+
+        // Get all the todoList where createdDate less than or equals to DEFAULT_CREATED_DATE
+        defaultTodoShouldNotBeFound("createdDate.lessThan=" + DEFAULT_CREATED_DATE);
+
+        // Get all the todoList where createdDate less than or equals to UPDATED_CREATED_DATE
+        defaultTodoShouldBeFound("createdDate.lessThan=" + UPDATED_CREATED_DATE);
+    }
+
+
     /**
      * Executes the search, and checks that the default entity is returned
      */
@@ -248,7 +372,9 @@ public class TodoResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(todo.getId().intValue())))
-            .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT.toString())));
+            .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT.toString())))
+            .andExpect(jsonPath("$.[*].done").value(hasItem(DEFAULT_DONE.booleanValue())))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))));
     }
 
     /**
@@ -282,7 +408,9 @@ public class TodoResourceIntTest {
         // Update the todo
         Todo updatedTodo = todoRepository.findOne(todo.getId());
         updatedTodo
-            .text(UPDATED_TEXT);
+            .text(UPDATED_TEXT)
+            .done(UPDATED_DONE)
+            .createdDate(UPDATED_CREATED_DATE);
         TodoDTO todoDTO = todoMapper.toDto(updatedTodo);
 
         restTodoMockMvc.perform(put("/api/todos")
@@ -295,6 +423,8 @@ public class TodoResourceIntTest {
         assertThat(todoList).hasSize(databaseSizeBeforeUpdate);
         Todo testTodo = todoList.get(todoList.size() - 1);
         assertThat(testTodo.getText()).isEqualTo(UPDATED_TEXT);
+        assertThat(testTodo.isDone()).isEqualTo(UPDATED_DONE);
+        assertThat(testTodo.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
 
         // Validate the Todo in Elasticsearch
         Todo todoEs = todoSearchRepository.findOne(testTodo.getId());
@@ -354,7 +484,9 @@ public class TodoResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(todo.getId().intValue())))
-            .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT.toString())));
+            .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT.toString())))
+            .andExpect(jsonPath("$.[*].done").value(hasItem(DEFAULT_DONE.booleanValue())))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))));
     }
 
     @Test

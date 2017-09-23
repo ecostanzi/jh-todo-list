@@ -8,6 +8,14 @@
         <dd>
             <span>{{todo.text}}</span>
         </dd>
+        <dt><span>Done</span></dt>
+        <dd>
+            <span>{{todo.done}}</span>
+        </dd>
+        <dt><span>Created Date</span></dt>
+        <dd>
+            <span>{{todo.createdDate | date:'medium'}}</span>
+        </dd>
         <dt><span>Author</span></dt>
         <dd>
             {{todo.author.login}}

@@ -68,7 +68,7 @@ class TodoGatlingTest extends Simulation {
             .exec(http("Create new todo")
             .post("/api/todos")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "text":"SAMPLE_TEXT"}""")).asJSON
+            .body(StringBody("""{"id":null, "text":"SAMPLE_TEXT", "done":null, "createdDate":"2020-01-01T00:00:00.000Z"}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_todo_url"))).exitHereIfFailed
             .pause(10)
