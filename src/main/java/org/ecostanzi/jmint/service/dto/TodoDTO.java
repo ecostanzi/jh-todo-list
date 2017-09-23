@@ -2,10 +2,9 @@ package org.ecostanzi.jmint.service.dto;
 
 
 import java.time.ZonedDateTime;
+import javax.persistence.PrePersist;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -23,9 +22,7 @@ public class TodoDTO implements Serializable {
 
     private ZonedDateTime createdDate;
 
-    private Long authorId;
-
-    private String authorLogin;
+    private UserDTO author;
 
     public Long getId() {
         return id;
@@ -41,6 +38,14 @@ public class TodoDTO implements Serializable {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public UserDTO getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(UserDTO author) {
+        this.author = author;
     }
 
     public Boolean isDone() {
@@ -59,21 +64,6 @@ public class TodoDTO implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public Long getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(Long userId) {
-        this.authorId = userId;
-    }
-
-    public String getAuthorLogin() {
-        return authorLogin;
-    }
-
-    public void setAuthorLogin(String userLogin) {
-        this.authorLogin = userLogin;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -94,6 +84,11 @@ public class TodoDTO implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());
+    }
+
+    @PrePersist
+    public void preCreate(){
+        this.createdDate = ZonedDateTime.now();
     }
 
     @Override

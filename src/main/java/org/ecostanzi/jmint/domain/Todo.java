@@ -31,7 +31,7 @@ public class Todo implements Serializable {
     private String text;
 
     @Column(name = "done")
-    private Boolean done;
+    private Boolean done = Boolean.FALSE;
 
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
@@ -115,6 +115,11 @@ public class Todo implements Serializable {
             return false;
         }
         return Objects.equals(getId(), todo.getId());
+    }
+
+    @PrePersist
+    public void prePersist(){
+        this.createdDate = ZonedDateTime.now();
     }
 
     @Override
