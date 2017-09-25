@@ -1,0 +1,63 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4">
+            <p *ngIf="accountData">
+                Ciao {{accountData.login}} !
+            </p>
+
+            <hr/>
+            <div class="card">
+                <div class="card-header">
+                    Le mie liste
+                </div>
+                <div class="card-block">
+                    <ul class="nav nav-pills flex-column" id="exCollapsingNavbar3">
+                        <li class="nav-item" *ngFor="let todo of todos ;trackBy: trackId">
+                            <a class="nav-link" href="#">{{todo.text}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <hr/>
+            <div class="input-group input-group-sm">
+                <input type="text" class="form-control" placeholder="Nuova Lista">
+                <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button">Inserisci</button>
+                </span>
+            </div>
+
+        </div>
+        <div class="col-lg-8">
+
+            <div class="input-group">
+                <input class="form-control" placeholder="Nuovo item...">
+                <span class="input-group-btn">
+                <button class="btn btn-info" type="button">
+                    +
+                </button>
+                </span>
+            </div>
+
+
+            <table class="table table-striped table-sm mt-2" >
+                <tbody>
+                <tr *ngFor="let todo of todos ;trackBy: trackId">
+                    <td>
+                        {{todo.text}}
+                    </td>
+                    <td>
+                        {{todo.author.login}}
+                    </td>
+                    <td>
+                        {{todo.done}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>

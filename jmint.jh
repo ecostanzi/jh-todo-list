@@ -1,0 +1,30 @@
+// JDL definition for application 'jmint' generated with command 'jhipster export-jdl'
+
+entity Todo (todo) {
+  text String required minlength(1) maxlength(40),
+  done Boolean,
+  createdDate ZonedDateTime
+}
+entity TodoList (todo_list) {
+  name String required minlength(1) maxlength(20)
+}
+entity UserList (user_list) {
+  main Boolean
+}
+
+relationship ManyToOne {
+  Todo{author(login) required} to User,
+  Todo{list} to TodoList,
+  TodoList{author(login) required} to User,
+  UserList{user(login) required} to User,
+  UserList{todoList required} to TodoList
+}
+
+dto Todo with mapstruct
+paginate Todo with pagination
+service Todo with serviceImpl
+dto TodoList with mapstruct
+paginate TodoList with pagination
+service TodoList with serviceImpl
+dto UserList with mapstruct
+service UserList with serviceImpl

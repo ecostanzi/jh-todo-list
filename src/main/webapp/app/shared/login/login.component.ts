@@ -5,6 +5,7 @@ import { JhiEventManager } from 'ng-jhipster';
 
 import { LoginService } from './login.service';
 import { StateStorageService } from '../auth/state-storage.service';
+import {Principal} from "../auth/principal.service";
 
 @Component({
     selector: 'jhi-login-modal',
@@ -24,6 +25,7 @@ export class JhiLoginModalComponent implements AfterViewInit {
         private elementRef: ElementRef,
         private renderer: Renderer,
         private router: Router,
+        private principal: Principal,
         public activeModal: NgbActiveModal
     ) {
         this.credentials = {};
@@ -53,7 +55,7 @@ export class JhiLoginModalComponent implements AfterViewInit {
             this.activeModal.dismiss('login success');
             if (this.router.url === '/register' || (/^\/activate\//.test(this.router.url)) ||
                 (/^\/reset\//.test(this.router.url))) {
-                this.router.navigate(['']);
+                this.router.navigate(['todohome']);
             }
 
             this.eventManager.broadcast({
@@ -67,6 +69,10 @@ export class JhiLoginModalComponent implements AfterViewInit {
             if (redirect) {
                 this.stateStorageService.storeUrl(null);
                 this.router.navigate([redirect]);
+            } else {
+                if(this.principal.hasAuthority("ROLE_USER")){
+                    this.router.navigate(['todohome']);
+                }
             }
         }).catch(() => {
             this.authenticationError = true;
